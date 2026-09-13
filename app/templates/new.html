@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>New Ticket · Datastraw CRM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.4.1/tailwind.min.js"></script>
+<script src="/static/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<header class="bg-white border-b border-slate-200">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4">
+    <a href="/" class="text-sm text-slate-500 hover:text-slate-800">&larr; Back to tickets</a>
+    <h1 class="text-xl font-semibold text-slate-900 mt-1">New Support Ticket</h1>
+  </div>
+</header>
+
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+  <form id="ticketForm" class="bg-white border border-slate-200 rounded-xl p-6 space-y-5">
+
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Customer Name</label>
+      <input required name="customer_name" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Jane Doe" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Customer Email</label>
+      <input required name="customer_email" type="email" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="jane@example.com" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Issue Title</label>
+      <input required name="subject" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Order not delivered" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+      <textarea required name="description" rows="4" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Describe the issue in detail..."></textarea>
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <label class="block text-sm font-medium text-slate-700">Priority</label>
+        <button type="button" id="suggestBtn" class="text-xs font-medium text-slate-600 hover:text-slate-900 underline">
+          Suggest with AI
+        </button>
+      </div>
+      <select name="priority" id="prioritySelect" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+        <option value="Low">Low</option>
+        <option value="Normal" selected>Normal</option>
+        <option value="High">High</option>
+        <option value="Urgent">Urgent</option>
+      </select>
+      <p id="suggestHint" class="hidden text-xs text-slate-500 mt-1"></p>
+    </div>
+
+    <div id="errorBox" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2"></div>
+
+    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition">
+      Create Ticket
+    </button>
+  </form>
+</main>
+
+<script>
+const form = document.getElementById("ticketForm");
+const errorBox = document.getElementById("errorBox");
+const suggestBtn = document.getElementById("suggestBtn");
+const prioritySelect = document.getElementById("prioritySelect");
+const suggestHint = document.getElementById("suggestHint");
+
+suggestBtn.addEventListener("click", async () => {
+  const subject = form.subject.value.trim();
+  const description = form.description.value.trim();
+  if (!subject || !description) {
+    suggestHint.textContent = "Fill in subject and description first.";
+    suggestHint.classList.remove("hidden");
+    return;
+  }
+
+  suggestBtn.textContent = "Thinking...";
+  suggestBtn.disabled = true;
+
+  try {
+    const res = await fetch("/api/tickets/suggest-priority", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subject, description }),
+    });
+    const data = await res.json();
+
+    prioritySelect.value = data.suggested_priority;
+    suggestHint.textContent = data.confidence > 0
+      ? `AI suggested "${data.suggested_priority}" (${Math.round(data.confidence * 100)}% confidence). Adjust if needed.`
+      : `Couldn't reach the AI model - defaulted to Normal. Set it manually.`;
+    suggestHint.classList.remove("hidden");
+  } catch {
+    suggestHint.textContent = "Suggestion failed. Set priority manually.";
+    suggestHint.classList.remove("hidden");
+  } finally {
+    suggestBtn.textContent = "Suggest with AI";
+    suggestBtn.disabled = false;
+  }
+});
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  errorBox.classList.add("hidden");
+
+  const data = Object.fromEntries(new FormData(form).entries());
+
+  const res = await fetch("/api/tickets", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    errorBox.textContent = "Could not create ticket: " + (err.detail || res.statusText);
+    errorBox.classList.remove("hidden");
+    return;
+  }
+
+  const created = await res.json();
+  window.location.href = `/ticket/${created.ticket_id}`;
+});
+</script>
+
+</body>
+</html>

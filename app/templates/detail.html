@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ticket Detail · Datastraw CRM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.4.1/tailwind.min.js"></script>
+<script src="/static/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<header class="bg-white border-b border-slate-200">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4">
+    <a href="/" class="text-sm text-slate-500 hover:text-slate-800">&larr; Back to tickets</a>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-4 sm:px-6 py-8" id="content">
+  <div class="text-slate-400 text-sm">Loading...</div>
+</main>
+
+<script>
+const ticketId = window.location.pathname.split("/").pop();
+const content = document.getElementById("content");
+
+async function loadTicket() {
+  const res = await fetch(`/api/tickets/${ticketId}`);
+  if (!res.ok) {
+    content.innerHTML = `<div class="text-red-600">Ticket not found.</div>`;
+    return;
+  }
+  const t = await res.json();
+  render(t);
+}
+
+function render(t) {
+  const notesHtml = t.notes.length
+    ? t.notes.map(n => `
+        <div class="border-l-2 border-slate-200 pl-3 py-1">
+          <p class="text-sm text-slate-700">${escapeHtml(n.note_text)}</p>
+          <p class="text-xs text-slate-400 mt-0.5">${formatDate(n.created_at)}</p>
+        </div>`).join("")
+    : `<p class="text-sm text-slate-400">No notes yet.</p>`;
+
+  content.innerHTML = `
+    <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <p class="font-mono text-xs text-slate-400 mb-1">${t.ticket_id}</p>
+          <h1 class="text-xl font-semibold text-slate-900">${escapeHtml(t.subject)}</h1>
+        </div>
+        <div class="flex gap-2">${priorityBadge(t.priority)}${statusBadge(t.status)}</div>
+      </div>
+
+      <dl class="grid grid-cols-2 gap-4 text-sm mb-4 pb-4 border-b border-slate-100">
+        <div>
+          <dt class="text-slate-400">Customer</dt>
+          <dd class="text-slate-700 font-medium">${escapeHtml(t.customer_name)}</dd>
+        </div>
+        <div>
+          <dt class="text-slate-400">Email</dt>
+          <dd class="text-slate-700">${escapeHtml(t.customer_email)}</dd>
+        </div>
+        <div>
+          <dt class="text-slate-400">Created</dt>
+          <dd class="text-slate-700">${formatDate(t.created_at)}</dd>
+        </div>
+        <div>
+          <dt class="text-slate-400">Last Updated</dt>
+          <dd class="text-slate-700">${formatDate(t.updated_at)}</dd>
+        </div>
+      </dl>
+
+      <div>
+        <dt class="text-slate-400 text-sm mb-1">Description</dt>
+        <dd class="text-slate-700 text-sm whitespace-pre-wrap">${escapeHtml(t.description)}</dd>
+      </div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+      <h2 class="text-sm font-semibold text-slate-700 mb-3">Update Ticket</h2>
+      <form id="updateForm" class="space-y-3">
+        <div class="flex gap-3">
+          <select name="status" class="border border-slate-300 rounded-lg px-3 py-2 text-sm flex-1">
+            <option value="Open" ${t.status === "Open" ? "selected" : ""}>Open</option>
+            <option value="In Progress" ${t.status === "In Progress" ? "selected" : ""}>In Progress</option>
+            <option value="Closed" ${t.status === "Closed" ? "selected" : ""}>Closed</option>
+          </select>
+          <button type="submit" class="bg-slate-900 hover:bg-slate-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
+            Save Status
+          </button>
+        </div>
+      </form>
+
+      <form id="noteForm" class="mt-4 space-y-2">
+        <textarea name="notes" rows="2" placeholder="Add an internal note..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"></textarea>
+        <button type="submit" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium px-4 py-2 rounded-lg transition">
+          Add Note
+        </button>
+      </form>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-xl p-6">
+      <h2 class="text-sm font-semibold text-slate-700 mb-3">Notes</h2>
+      <div class="space-y-2">${notesHtml}</div>
+    </div>
+  `;
+
+  document.getElementById("updateForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const status = new FormData(e.target).get("status");
+    await fetch(`/api/tickets/${ticketId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    loadTicket();
+  });
+
+  document.getElementById("noteForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const notes = new FormData(e.target).get("notes");
+    if (!notes || !notes.trim()) return;
+    await fetch(`/api/tickets/${ticketId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ notes }),
+    });
+    e.target.reset();
+    loadTicket();
+  });
+}
+
+loadTicket();
+</script>
+
+</body>
+</html>
