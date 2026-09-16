@@ -1,22 +1,51 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Ticket Detail · Datastraw CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50: '#E7F1EF', 100: '#C3DCD7', 300: '#5F9C91',
+            600: '#0F5D53', 700: '#0B4B44', 900: '#062F2A',
+          },
+          sand: { 50: '#F6F5F1', 100: '#EEEBE3', 200: '#DEDACD', 600: '#8A8577', 700: '#6B6759' },
+        },
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', ui-sans-serif, system-ui; }
+  .font-display { font-family: 'Space Grotesk', ui-sans-serif, system-ui; }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .enter { animation: fadeSlideIn 0.35s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { .enter { animation: none; } }
+</style>
 <script src="/static/app.js"></script>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body class="bg-sand-50 min-h-screen">
 
-<header class="bg-white border-b border-slate-200">
+<header class="bg-white border-b border-sand-200">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4">
-    <a href="/" class="text-sm text-slate-500 hover:text-slate-800">&larr; Back to tickets</a>
+    <a href="/" class="text-sm text-brand-700 hover:text-brand-900">&larr; Back to tickets</a>
   </div>
 </header>
 
 <main class="max-w-3xl mx-auto px-4 sm:px-6 py-8" id="content">
-  <div class="text-slate-400 text-sm">Loading...</div>
+  <div class="text-stone-400 text-sm">Loading...</div>
 </main>
 
 <script>
@@ -36,72 +65,72 @@ async function loadTicket() {
 function render(t) {
   const notesHtml = t.notes.length
     ? t.notes.map(n => `
-        <div class="border-l-2 border-slate-200 pl-3 py-1">
-          <p class="text-sm text-slate-700">${escapeHtml(n.note_text)}</p>
-          <p class="text-xs text-slate-400 mt-0.5">${formatDate(n.created_at)}</p>
+        <div class="border-l-2 border-sand-200 pl-3 py-1">
+          <p class="text-sm text-stone-700">${escapeHtml(n.note_text)}</p>
+          <p class="text-xs text-stone-400 mt-0.5">${formatDate(n.created_at)}</p>
         </div>`).join("")
-    : `<p class="text-sm text-slate-400">No notes yet.</p>`;
+    : `<p class="text-sm text-stone-400">No notes yet.</p>`;
 
   content.innerHTML = `
-    <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
+    <div class="enter bg-white border border-sand-200 rounded-xl p-6 mb-6">
       <div class="flex items-start justify-between mb-4">
         <div>
-          <p class="font-mono text-xs text-slate-400 mb-1">${t.ticket_id}</p>
-          <h1 class="text-xl font-semibold text-slate-900">${escapeHtml(t.subject)}</h1>
+          <p class="font-mono text-xs text-stone-400 mb-1">${t.ticket_id}</p>
+          <h1 class="text-xl font-display font-semibold text-stone-900">${escapeHtml(t.subject)}</h1>
         </div>
         <div class="flex gap-2">${priorityBadge(t.priority)}${statusBadge(t.status)}</div>
       </div>
 
-      <dl class="grid grid-cols-2 gap-4 text-sm mb-4 pb-4 border-b border-slate-100">
+      <dl class="grid grid-cols-2 gap-4 text-sm mb-4 pb-4 border-b border-stone-100">
         <div>
-          <dt class="text-slate-400">Customer</dt>
-          <dd class="text-slate-700 font-medium">${escapeHtml(t.customer_name)}</dd>
+          <dt class="text-stone-400">Customer</dt>
+          <dd class="text-stone-700 font-medium">${escapeHtml(t.customer_name)}</dd>
         </div>
         <div>
-          <dt class="text-slate-400">Email</dt>
-          <dd class="text-slate-700">${escapeHtml(t.customer_email)}</dd>
+          <dt class="text-stone-400">Email</dt>
+          <dd class="text-stone-700">${escapeHtml(t.customer_email)}</dd>
         </div>
         <div>
-          <dt class="text-slate-400">Created</dt>
-          <dd class="text-slate-700">${formatDate(t.created_at)}</dd>
+          <dt class="text-stone-400">Created</dt>
+          <dd class="text-stone-700">${formatDate(t.created_at)}</dd>
         </div>
         <div>
-          <dt class="text-slate-400">Last Updated</dt>
-          <dd class="text-slate-700">${formatDate(t.updated_at)}</dd>
+          <dt class="text-stone-400">Last Updated</dt>
+          <dd class="text-stone-700">${formatDate(t.updated_at)}</dd>
         </div>
       </dl>
 
       <div>
-        <dt class="text-slate-400 text-sm mb-1">Description</dt>
-        <dd class="text-slate-700 text-sm whitespace-pre-wrap">${escapeHtml(t.description)}</dd>
+        <dt class="text-stone-400 text-sm mb-1">Description</dt>
+        <dd class="text-stone-700 text-sm whitespace-pre-wrap">${escapeHtml(t.description)}</dd>
       </div>
     </div>
 
-    <div class="bg-white border border-slate-200 rounded-xl p-6 mb-6">
-      <h2 class="text-sm font-semibold text-slate-700 mb-3">Update Ticket</h2>
+    <div class="bg-white border border-sand-200 rounded-xl p-6 mb-6">
+      <h2 class="text-sm font-semibold text-stone-700 mb-3">Update Ticket</h2>
       <form id="updateForm" class="space-y-3">
         <div class="flex gap-3">
-          <select name="status" class="border border-slate-300 rounded-lg px-3 py-2 text-sm flex-1">
+          <select name="status" class="border border-stone-300 rounded-lg px-3 py-2 text-sm flex-1">
             <option value="Open" ${t.status === "Open" ? "selected" : ""}>Open</option>
             <option value="In Progress" ${t.status === "In Progress" ? "selected" : ""}>In Progress</option>
             <option value="Closed" ${t.status === "Closed" ? "selected" : ""}>Closed</option>
           </select>
-          <button type="submit" class="bg-slate-900 hover:bg-slate-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
+          <button type="submit" class="bg-brand-700 hover:bg-brand-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
             Save Status
           </button>
         </div>
       </form>
 
       <form id="noteForm" class="mt-4 space-y-2">
-        <textarea name="notes" rows="2" placeholder="Add an internal note..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"></textarea>
-        <button type="submit" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium px-4 py-2 rounded-lg transition">
+        <textarea name="notes" rows="2" placeholder="Add an internal note..." class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm"></textarea>
+        <button type="submit" class="bg-white border border-stone-300 hover:bg-sand-100 text-stone-700 text-sm font-medium px-4 py-2 rounded-lg transition">
           Add Note
         </button>
       </form>
     </div>
 
-    <div class="bg-white border border-slate-200 rounded-xl p-6">
-      <h2 class="text-sm font-semibold text-slate-700 mb-3">Notes</h2>
+    <div class="bg-white border border-sand-200 rounded-xl p-6">
+      <h2 class="text-sm font-semibold text-stone-700 mb-3">Notes</h2>
       <div class="space-y-2">${notesHtml}</div>
     </div>
   `;

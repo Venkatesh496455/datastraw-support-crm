@@ -1,63 +1,92 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>New Ticket · Datastraw CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50: '#E7F1EF', 100: '#C3DCD7', 300: '#5F9C91',
+            600: '#0F5D53', 700: '#0B4B44', 900: '#062F2A',
+          },
+          sand: { 50: '#F6F5F1', 100: '#EEEBE3', 200: '#DEDACD', 600: '#8A8577', 700: '#6B6759' },
+        },
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', ui-sans-serif, system-ui; }
+  .font-display { font-family: 'Space Grotesk', ui-sans-serif, system-ui; }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .enter { animation: fadeSlideIn 0.35s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { .enter { animation: none; } }
+</style>
 <script src="/static/app.js"></script>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body class="bg-sand-50 min-h-screen">
 
-<header class="bg-white border-b border-slate-200">
+<header class="bg-white border-b border-sand-200">
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4">
-    <a href="/" class="text-sm text-slate-500 hover:text-slate-800">&larr; Back to tickets</a>
-    <h1 class="text-xl font-semibold text-slate-900 mt-1">New Support Ticket</h1>
+    <a href="/" class="text-sm text-brand-700 hover:text-brand-900">&larr; Back to tickets</a>
+    <h1 class="text-xl font-display font-semibold text-stone-900 mt-1">New support ticket</h1>
   </div>
 </header>
 
 <main class="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-  <form id="ticketForm" class="bg-white border border-slate-200 rounded-xl p-6 space-y-5">
+  <form id="ticketForm" class="enter bg-white border border-sand-200 rounded-xl p-6 space-y-5">
 
     <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">Customer Name</label>
-      <input required name="customer_name" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Jane Doe" />
+      <label class="block text-sm font-medium text-stone-700 mb-1">Customer Name</label>
+      <input required name="customer_name" type="text" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300" placeholder="Jane Doe" />
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">Customer Email</label>
-      <input required name="customer_email" type="email" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="jane@example.com" />
+      <label class="block text-sm font-medium text-stone-700 mb-1">Customer Email</label>
+      <input required name="customer_email" type="email" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300" placeholder="jane@example.com" />
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">Issue Title</label>
-      <input required name="subject" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Order not delivered" />
+      <label class="block text-sm font-medium text-stone-700 mb-1">Issue Title</label>
+      <input required name="subject" type="text" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300" placeholder="Order not delivered" />
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
-      <textarea required name="description" rows="4" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Describe the issue in detail..."></textarea>
+      <label class="block text-sm font-medium text-stone-700 mb-1">Description</label>
+      <textarea required name="description" rows="4" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300" placeholder="Describe the issue in detail..."></textarea>
     </div>
 
     <div>
       <div class="flex items-center justify-between mb-1">
-        <label class="block text-sm font-medium text-slate-700">Priority</label>
-        <button type="button" id="suggestBtn" class="text-xs font-medium text-slate-600 hover:text-slate-900 underline">
+        <label class="block text-sm font-medium text-stone-700">Priority</label>
+        <button type="button" id="suggestBtn" class="text-xs font-medium text-stone-600 hover:text-stone-900 underline">
           Suggest with AI
         </button>
       </div>
-      <select name="priority" id="prioritySelect" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+      <select name="priority" id="prioritySelect" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm">
         <option value="Low">Low</option>
         <option value="Normal" selected>Normal</option>
         <option value="High">High</option>
         <option value="Urgent">Urgent</option>
       </select>
-      <p id="suggestHint" class="hidden text-xs text-slate-500 mt-1"></p>
+      <p id="suggestHint" class="hidden text-xs text-stone-500 mt-1"></p>
     </div>
 
     <div id="errorBox" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2"></div>
 
-    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg transition">
+    <button type="submit" class="w-full bg-brand-700 hover:bg-brand-600 text-white font-medium py-2.5 rounded-lg transition">
       Create Ticket
     </button>
   </form>

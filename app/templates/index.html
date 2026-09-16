@@ -1,22 +1,54 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Datastraw Support CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50: '#E7F1EF', 100: '#C3DCD7', 300: '#5F9C91',
+            600: '#0F5D53', 700: '#0B4B44', 900: '#062F2A',
+          },
+          sand: { 50: '#F6F5F1', 100: '#EEEBE3', 200: '#DEDACD', 600: '#8A8577', 700: '#6B6759' },
+        },
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', ui-sans-serif, system-ui; }
+  .font-display { font-family: 'Space Grotesk', ui-sans-serif, system-ui; }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .enter { animation: fadeSlideIn 0.35s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { .enter { animation: none; } }
+</style>
 <script src="/static/app.js"></script>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body class="bg-sand-50 min-h-screen">
 
-<header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+<header class="bg-brand-700 sticky top-0 z-10">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-    <div>
-      <h1 class="text-xl font-semibold text-slate-900">Support Tickets</h1>
-      <p class="text-sm text-slate-500">Datastraw Customer Support CRM</p>
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center text-sand-50 font-display font-semibold text-sm">DS</div>
+      <div>
+        <h1 class="text-xl font-display font-semibold text-white">Support tickets</h1>
+        <p class="text-sm text-brand-100">Datastraw customer support CRM</p>
+      </div>
     </div>
-    <a href="/new" class="bg-slate-900 hover:bg-slate-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition">
-      + New Ticket
+    <a href="/new" class="bg-amber-500 hover:bg-amber-600 text-brand-900 text-sm font-medium px-4 py-2.5 rounded-lg transition">
+      + New ticket
     </a>
   </div>
 </header>
@@ -24,39 +56,39 @@
 <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6">
 
   <!-- Search & Filters -->
-  <div class="bg-white border border-slate-200 rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-3">
+  <div class="bg-white border border-sand-200 rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-3">
     <input
       id="searchInput"
       type="text"
       placeholder="Search by name, email, ID, or keyword..."
-      class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
+      class="flex-1 border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
     />
-    <select id="statusFilter" class="border border-slate-300 rounded-lg px-3 py-2 text-sm">
+    <select id="statusFilter" class="border border-stone-300 rounded-lg px-3 py-2 text-sm">
       <option value="">All Statuses</option>
       <option value="Open">Open</option>
       <option value="In Progress">In Progress</option>
       <option value="Closed">Closed</option>
     </select>
-    <select id="priorityFilter" class="border border-slate-300 rounded-lg px-3 py-2 text-sm">
+    <select id="priorityFilter" class="border border-stone-300 rounded-lg px-3 py-2 text-sm">
       <option value="">All Priorities</option>
       <option value="Urgent">Urgent</option>
       <option value="High">High</option>
       <option value="Normal">Normal</option>
       <option value="Low">Low</option>
     </select>
-    <select id="sortSelect" class="border border-slate-300 rounded-lg px-3 py-2 text-sm">
+    <select id="sortSelect" class="border border-stone-300 rounded-lg px-3 py-2 text-sm">
       <option value="newest">Newest first</option>
       <option value="oldest">Oldest first</option>
       <option value="priority">By priority</option>
     </select>
   </div>
 
-  <div id="stats" class="text-sm text-slate-500 mb-3"></div>
+  <div id="stats" class="text-sm text-stone-500 mb-3"></div>
 
   <!-- Ticket table -->
-  <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+  <div class="bg-white border border-sand-200 rounded-xl overflow-hidden">
     <table class="w-full text-sm">
-      <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 text-left">
+      <thead class="bg-sand-100 border-b border-sand-200 text-stone-500 text-left">
         <tr>
           <th class="px-4 py-3 font-medium">ID</th>
           <th class="px-4 py-3 font-medium">Customer</th>
@@ -66,9 +98,9 @@
           <th class="px-4 py-3 font-medium">Created</th>
         </tr>
       </thead>
-      <tbody id="ticketBody" class="divide-y divide-slate-100"></tbody>
+      <tbody id="ticketBody" class="divide-y divide-stone-100"></tbody>
     </table>
-    <div id="emptyState" class="hidden text-center py-16 text-slate-400">
+    <div id="emptyState" class="hidden text-center py-16 text-stone-400">
       No tickets found.
     </div>
   </div>
@@ -100,21 +132,24 @@ async function loadTickets() {
     emptyState.classList.remove("hidden");
   } else {
     emptyState.classList.add("hidden");
+    let i = 0;
     for (const t of tickets) {
       const stale = isStale(t.created_at, t.status);
       const row = document.createElement("tr");
-      row.className = "hover:bg-slate-50 cursor-pointer transition" + (stale ? " bg-red-50/40" : "");
+      row.className = "enter hover:bg-sand-100 cursor-pointer transition" + (stale ? " bg-red-50/40" : "");
+      row.style.animationDelay = `${Math.min(i * 30, 300)}ms`;
+      i++;
       row.onclick = () => (window.location.href = `/ticket/${t.ticket_id}`);
       row.innerHTML = `
-        <td class="px-4 py-3 font-mono text-xs text-slate-500">${t.ticket_id}</td>
-        <td class="px-4 py-3 font-medium text-slate-800">${escapeHtml(t.customer_name)}</td>
-        <td class="px-4 py-3 text-slate-600">${escapeHtml(t.subject)}</td>
+        <td class="px-4 py-3 font-mono text-xs text-stone-500">${t.ticket_id}</td>
+        <td class="px-4 py-3 font-medium text-stone-800">${escapeHtml(t.customer_name)}</td>
+        <td class="px-4 py-3 text-stone-600">${escapeHtml(t.subject)}</td>
         <td class="px-4 py-3">${priorityBadge(t.priority)}</td>
         <td class="px-4 py-3">
           ${statusBadge(t.status)}
           ${stale ? '<span class="ml-1 text-xs text-red-500" title="Open 2+ days">⏱ stale</span>' : ""}
         </td>
-        <td class="px-4 py-3 text-slate-500">${formatDate(t.created_at)}</td>
+        <td class="px-4 py-3 text-stone-500">${formatDate(t.created_at)}</td>
       `;
       body.appendChild(row);
     }

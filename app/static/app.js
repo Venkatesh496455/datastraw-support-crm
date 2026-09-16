@@ -1,16 +1,16 @@
-// Shared helpers used across pages
+﻿// Shared helpers used across pages
 
 const STATUS_STYLES = {
-  "Open": "bg-blue-100 text-blue-800 border-blue-200",
-  "In Progress": "bg-amber-100 text-amber-800 border-amber-200",
-  "Closed": "bg-emerald-100 text-emerald-800 border-emerald-200",
+  "Open": "bg-brand-50 text-brand-700 border-brand-100",
+  "In Progress": "bg-amber-50 text-amber-600 border-amber-100",
+  "Closed": "bg-sand-100 text-sand-600 border-sand-200",
 };
 
 const PRIORITY_STYLES = {
-  "Urgent": "bg-red-100 text-red-700",
-  "High": "bg-orange-100 text-orange-700",
-  "Normal": "bg-slate-100 text-slate-600",
-  "Low": "bg-gray-100 text-gray-500",
+  "Urgent": "bg-red-50 text-red-700",
+  "High": "bg-amber-50 text-amber-600",
+  "Normal": "bg-brand-50 text-brand-600",
+  "Low": "bg-sand-100 text-sand-600",
 };
 
 function statusBadge(status) {
