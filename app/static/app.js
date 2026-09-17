@@ -1,16 +1,16 @@
 ﻿// Shared helpers used across pages
 
 const STATUS_STYLES = {
-  "Open": "bg-brand-50 text-brand-700 border-brand-100 dark:bg-brand-800 dark:text-brand-200 dark:border-brand-700",
+  "Open": "bg-brand-50 text-brand-700 border-brand-100 dark:bg-blue-500/15 dark:text-blue-300 dark:border-blue-500/30",
   "In Progress": "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30",
-  "Closed": "bg-sand-100 text-sand-600 border-sand-200 dark:bg-brand-800 dark:text-sand-300 dark:border-brand-700",
+  "Closed": "bg-sand-100 text-sand-600 border-sand-200 dark:bg-white/10 dark:text-sand-200 dark:border-white/10",
 };
 
 const PRIORITY_STYLES = {
-  "Urgent": "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300",
-  "High": "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300",
-  "Normal": "bg-brand-50 text-brand-600 dark:bg-brand-800 dark:text-brand-200",
-  "Low": "bg-sand-100 text-sand-600 dark:bg-brand-800 dark:text-sand-300",
+  "Urgent": "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-300",
+  "High": "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300",
+  "Normal": "bg-brand-50 text-brand-600 dark:bg-white/10 dark:text-sand-200",
+  "Low": "bg-sand-100 text-sand-600 dark:bg-white/5 dark:text-sand-500",
 };
 
 function statusBadge(status) {
