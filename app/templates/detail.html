@@ -7,15 +7,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
+    darkMode: 'class',
     theme: {
       extend: {
         colors: {
           brand: {
             50: '#E7F1EF', 100: '#C3DCD7', 300: '#5F9C91',
-            600: '#0F5D53', 700: '#0B4B44', 900: '#062F2A',
+            600: '#0F5D53', 700: '#0B4B44', 800: '#0D423B', 900: '#062F2A', 950: '#041F1B',
           },
           sand: { 50: '#F6F5F1', 100: '#EEEBE3', 200: '#DEDACD', 600: '#8A8577', 700: '#6B6759' },
         },
@@ -33,24 +39,34 @@
   @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   .enter { animation: fadeSlideIn 0.35s ease-out both; }
   @media (prefers-reduced-motion: reduce) { .enter { animation: none; } }
+  *, *::before, *::after { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
 </style>
 <script src="/static/app.js"></script>
 </head>
-<body class="bg-sand-50 min-h-screen">
+<body class="bg-sand-50 dark:bg-brand-950 min-h-screen">
 
-<header class="bg-white border-b border-sand-200">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4">
-    <a href="/" class="text-sm text-brand-700 hover:text-brand-900">&larr; Back to tickets</a>
+<header class="bg-white dark:bg-brand-900 border-b border-sand-200 dark:border-brand-800">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <a href="/" class="text-sm text-brand-700 dark:text-brand-300 hover:text-brand-900 dark:hover:text-brand-100">&larr; Back to tickets</a>
+    <button id="themeToggle" aria-label="Toggle dark mode" class="w-9 h-9 rounded-lg flex items-center justify-center text-stone-500 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-brand-800 transition">
+      <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1.5m0 15V21m8.25-9H18.5m-13 0H3.75m14.478-6.228-1.06 1.06M6.343 17.657l-1.06 1.06m12.374 0-1.06-1.06M6.343 6.343l-1.06-1.06M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg>
+      <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>
+    </button>
   </div>
 </header>
 
 <main class="max-w-3xl mx-auto px-4 sm:px-6 py-8" id="content">
-  <div class="text-stone-400 text-sm">Loading...</div>
+  <div class="text-stone-400 dark:text-sand-500 text-sm">Loading...</div>
 </main>
 
 <script>
 const ticketId = window.location.pathname.split("/").pop();
 const content = document.getElementById("content");
+
+document.getElementById("themeToggle").addEventListener("click", () => {
+  document.documentElement.classList.toggle("dark");
+  localStorage.theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
+});
 
 async function loadTicket() {
   const res = await fetch(`/api/tickets/${ticketId}`);
@@ -65,52 +81,52 @@ async function loadTicket() {
 function render(t) {
   const notesHtml = t.notes.length
     ? t.notes.map(n => `
-        <div class="border-l-2 border-sand-200 pl-3 py-1">
-          <p class="text-sm text-stone-700">${escapeHtml(n.note_text)}</p>
-          <p class="text-xs text-stone-400 mt-0.5">${formatDate(n.created_at)}</p>
+        <div class="border-l-2 border-sand-200 dark:border-brand-700 pl-3 py-1">
+          <p class="text-sm text-stone-700 dark:text-sand-200">${escapeHtml(n.note_text)}</p>
+          <p class="text-xs text-stone-400 dark:text-sand-500 mt-0.5">${formatDate(n.created_at)}</p>
         </div>`).join("")
-    : `<p class="text-sm text-stone-400">No notes yet.</p>`;
+    : `<p class="text-sm text-stone-400 dark:text-sand-500">No notes yet.</p>`;
 
   content.innerHTML = `
-    <div class="enter bg-white border border-sand-200 rounded-xl p-6 mb-6">
+    <div class="enter bg-white dark:bg-brand-900 border border-sand-200 dark:border-brand-800 rounded-xl p-6 mb-6">
       <div class="flex items-start justify-between mb-4">
         <div>
-          <p class="font-mono text-xs text-stone-400 mb-1">${t.ticket_id}</p>
-          <h1 class="text-xl font-display font-semibold text-stone-900">${escapeHtml(t.subject)}</h1>
+          <p class="font-mono text-xs text-stone-400 dark:text-sand-500 mb-1">${t.ticket_id}</p>
+          <h1 class="text-xl font-display font-semibold text-stone-900 dark:text-sand-50">${escapeHtml(t.subject)}</h1>
         </div>
         <div class="flex gap-2">${priorityBadge(t.priority)}${statusBadge(t.status)}</div>
       </div>
 
-      <dl class="grid grid-cols-2 gap-4 text-sm mb-4 pb-4 border-b border-stone-100">
+      <dl class="grid grid-cols-2 gap-4 text-sm mb-4 pb-4 border-b border-stone-100 dark:border-brand-800">
         <div>
-          <dt class="text-stone-400">Customer</dt>
-          <dd class="text-stone-700 font-medium">${escapeHtml(t.customer_name)}</dd>
+          <dt class="text-stone-400 dark:text-sand-500">Customer</dt>
+          <dd class="text-stone-700 dark:text-sand-200 font-medium">${escapeHtml(t.customer_name)}</dd>
         </div>
         <div>
-          <dt class="text-stone-400">Email</dt>
-          <dd class="text-stone-700">${escapeHtml(t.customer_email)}</dd>
+          <dt class="text-stone-400 dark:text-sand-500">Email</dt>
+          <dd class="text-stone-700 dark:text-sand-200">${escapeHtml(t.customer_email)}</dd>
         </div>
         <div>
-          <dt class="text-stone-400">Created</dt>
-          <dd class="text-stone-700">${formatDate(t.created_at)}</dd>
+          <dt class="text-stone-400 dark:text-sand-500">Created</dt>
+          <dd class="text-stone-700 dark:text-sand-200">${formatDate(t.created_at)}</dd>
         </div>
         <div>
-          <dt class="text-stone-400">Last Updated</dt>
-          <dd class="text-stone-700">${formatDate(t.updated_at)}</dd>
+          <dt class="text-stone-400 dark:text-sand-500">Last Updated</dt>
+          <dd class="text-stone-700 dark:text-sand-200">${formatDate(t.updated_at)}</dd>
         </div>
       </dl>
 
       <div>
-        <dt class="text-stone-400 text-sm mb-1">Description</dt>
-        <dd class="text-stone-700 text-sm whitespace-pre-wrap">${escapeHtml(t.description)}</dd>
+        <dt class="text-stone-400 dark:text-sand-500 text-sm mb-1">Description</dt>
+        <dd class="text-stone-700 dark:text-sand-200 text-sm whitespace-pre-wrap">${escapeHtml(t.description)}</dd>
       </div>
     </div>
 
-    <div class="bg-white border border-sand-200 rounded-xl p-6 mb-6">
-      <h2 class="text-sm font-semibold text-stone-700 mb-3">Update Ticket</h2>
+    <div class="bg-white dark:bg-brand-900 border border-sand-200 dark:border-brand-800 rounded-xl p-6 mb-6">
+      <h2 class="text-sm font-semibold text-stone-700 dark:text-sand-200 mb-3">Update Ticket</h2>
       <form id="updateForm" class="space-y-3">
         <div class="flex gap-3">
-          <select name="status" class="border border-stone-300 rounded-lg px-3 py-2 text-sm flex-1">
+          <select name="status" class="border border-stone-300 dark:border-brand-700 dark:bg-brand-900 dark:text-sand-100 rounded-lg px-3 py-2 text-sm flex-1">
             <option value="Open" ${t.status === "Open" ? "selected" : ""}>Open</option>
             <option value="In Progress" ${t.status === "In Progress" ? "selected" : ""}>In Progress</option>
             <option value="Closed" ${t.status === "Closed" ? "selected" : ""}>Closed</option>
@@ -122,15 +138,15 @@ function render(t) {
       </form>
 
       <form id="noteForm" class="mt-4 space-y-2">
-        <textarea name="notes" rows="2" placeholder="Add an internal note..." class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm"></textarea>
-        <button type="submit" class="bg-white border border-stone-300 hover:bg-sand-100 text-stone-700 text-sm font-medium px-4 py-2 rounded-lg transition">
+        <textarea name="notes" rows="2" placeholder="Add an internal note..." class="w-full border border-stone-300 dark:border-brand-700 dark:bg-brand-900 dark:text-sand-100 dark:placeholder-sand-500 rounded-lg px-3 py-2 text-sm"></textarea>
+        <button type="submit" class="bg-white dark:bg-brand-900 border border-stone-300 dark:border-brand-700 hover:bg-sand-100 dark:hover:bg-brand-800 text-stone-700 dark:text-sand-200 text-sm font-medium px-4 py-2 rounded-lg transition">
           Add Note
         </button>
       </form>
     </div>
 
-    <div class="bg-white border border-sand-200 rounded-xl p-6">
-      <h2 class="text-sm font-semibold text-stone-700 mb-3">Notes</h2>
+    <div class="bg-white dark:bg-brand-900 border border-sand-200 dark:border-brand-800 rounded-xl p-6">
+      <h2 class="text-sm font-semibold text-stone-700 dark:text-sand-200 mb-3">Notes</h2>
       <div class="space-y-2">${notesHtml}</div>
     </div>
   `;
